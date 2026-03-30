@@ -2,7 +2,7 @@ let model, webcam, labelContainer, maxPredictions;
 let lastDetectedCard = "";
 
 const URL = "/static/model/";
-
+// Load the image model and setup the webcam
 async function init() {
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
@@ -10,9 +10,22 @@ async function init() {
     model = await tmImage.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
 
-    const flip = true;
-    webcam = new tmImage.Webcam(300, 300, flip);
-    await webcam.setup();
+    // 1. Define the constraints
+    // 'facingMode: "environment"' tells the phone to use the back camera.
+    const constraints = {
+        facingMode: "environment"
+    };
+
+    const width = 300;
+    const height = 300;
+    const flip = false; // Usually, you don't want to flip (mirror) the back camera
+
+    // 2. Pass constraints into the Webcam constructor
+    webcam = new tmImage.Webcam(width, height, flip);
+
+    // 3. Setup with the constraints
+    await webcam.setup(constraints);
+
     await webcam.play();
     window.requestAnimationFrame(loop);
 
